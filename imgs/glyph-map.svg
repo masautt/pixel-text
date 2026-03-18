@@ -1,0 +1,129 @@
+<svg viewBox="0 0 860 260" xmlns="http://www.w3.org/2000/svg" font-family="monospace">
+  <rect width="860" height="260" fill="#141418" rx="10"/>
+  <rect width="860" height="260" fill="none" stroke="#2a2a35" stroke-width="1" rx="10"/>
+
+  <text x="430" y="30" font-size="10" fill="#666680" text-anchor="middle" letter-spacing="2">BUILT-IN GLYPH SET — CUSTOM 5×7 PIXEL FONT</text>
+
+  <!-- Uppercase row -->
+  <text x="430" y="58" font-size="10" fill="#e8ff47" text-anchor="middle" letter-spacing="1">UPPERCASE A–Z</text>
+  <!-- Simulate pixel chars as letter placeholders in styled boxes -->
+  <g transform="translate(30, 68)">
+    <!-- A-Z boxes -->
+    <rect x="0" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="14" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">A</text>
+    <rect x="30" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="44" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">B</text>
+    <rect x="60" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="74" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">C</text>
+    <rect x="90" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="104" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">D</text>
+    <rect x="120" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="134" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">E</text>
+    <rect x="150" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="164" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">F</text>
+    <rect x="180" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="194" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">G</text>
+    <rect x="210" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="224" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">H</text>
+    <rect x="240" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="254" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">I</text>
+    <rect x="270" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="284" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">J</text>
+    <rect x="300" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="314" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">K</text>
+    <rect x="330" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="344" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">L</text>
+    <rect x="360" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="374" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">M</text>
+    <rect x="390" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="404" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">N</text>
+    <rect x="420" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="434" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">O</text>
+    <rect x="450" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="464" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">P</text>
+    <rect x="480" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="494" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">Q</text>
+    <rect x="510" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="524" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">R</text>
+    <rect x="540" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="554" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">S</text>
+    <rect x="570" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="584" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">T</text>
+    <rect x="600" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="614" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">U</text>
+    <rect x="630" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="644" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">V</text>
+    <rect x="660" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="674" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">W</text>
+    <rect x="690" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="704" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">X</text>
+    <rect x="720" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="734" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">Y</text>
+    <rect x="750" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="764" y="21" fill="#e2e2e8" font-size="14" text-anchor="middle" font-family="monospace">Z</text>
+  </g>
+
+  <!-- Lowercase row -->
+  <text x="430" y="130" font-size="10" fill="#ff6b47" text-anchor="middle" letter-spacing="1">lowercase a–z  (with descender support)</text>
+  <g transform="translate(30, 140)">
+    <rect x="0" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="14" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">a</text>
+    <rect x="30" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="44" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">b</text>
+    <rect x="60" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="74" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">c</text>
+    <rect x="90" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="104" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">d</text>
+    <rect x="120" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="134" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">e</text>
+    <rect x="150" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="164" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">f</text>
+    <rect x="180" y="0" width="28" height="32" fill="#1a0010" rx="2" stroke="#ff6b4755" stroke-width="1"/>
+    <text x="194" y="21" fill="#ff6b47" font-size="14" text-anchor="middle" font-family="monospace">g</text>
+    <text x="194" y="38" font-size="7" fill="#ff6b47" text-anchor="middle">↓</text>
+    <rect x="210" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="224" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">h</text>
+    <rect x="240" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="254" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">i</text>
+    <rect x="270" y="0" width="28" height="32" fill="#1a0010" rx="2" stroke="#ff6b4755" stroke-width="1"/>
+    <text x="284" y="21" fill="#ff6b47" font-size="14" text-anchor="middle" font-family="monospace">j</text>
+    <rect x="300" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="314" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">k</text>
+    <rect x="330" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="344" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">l</text>
+    <rect x="360" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="374" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">m</text>
+    <rect x="390" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="404" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">n</text>
+    <rect x="420" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="434" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">o</text>
+    <rect x="450" y="0" width="28" height="32" fill="#1a0010" rx="2" stroke="#ff6b4755" stroke-width="1"/>
+    <text x="464" y="21" fill="#ff6b47" font-size="14" text-anchor="middle" font-family="monospace">p</text>
+    <rect x="480" y="0" width="28" height="32" fill="#1a0010" rx="2" stroke="#ff6b4755" stroke-width="1"/>
+    <text x="494" y="21" fill="#ff6b47" font-size="14" text-anchor="middle" font-family="monospace">q</text>
+    <rect x="510" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="524" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">r</text>
+    <rect x="540" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="554" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">s</text>
+    <rect x="570" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="584" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">t</text>
+    <rect x="600" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="614" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">u</text>
+    <rect x="630" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="644" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">v</text>
+    <rect x="660" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="674" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">w</text>
+    <rect x="690" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="704" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">x</text>
+    <rect x="720" y="0" width="28" height="32" fill="#1a0010" rx="2" stroke="#ff6b4755" stroke-width="1"/>
+    <text x="734" y="21" fill="#ff6b47" font-size="14" text-anchor="middle" font-family="monospace">y</text>
+    <rect x="750" y="0" width="28" height="32" fill="#0d0d0f" rx="2" stroke="#2a2a35" stroke-width="1"/>
+    <text x="764" y="21" fill="#aaaabc" font-size="14" text-anchor="middle" font-family="monospace">z</text>
+  </g>
+
+  <!-- Legend -->
+  <rect x="30" y="210" width="14" height="14" fill="#1a0010" rx="2" stroke="#ff6b4755" stroke-width="1"/>
+  <text x="50" y="222" font-size="10" fill="#ff6b47">= has descender (extends below baseline)</text>
+
+  <text x="430" y="248" font-size="10" fill="#666680" text-anchor="middle">Each glyph is defined as a 5×7 binary bitmap. Widths vary: narrow glyphs like i (1px), l (2px) are proportional.</text>
+</svg>
