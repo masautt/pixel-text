@@ -554,6 +554,17 @@ function hexToRGB(hex) {
   return [r, g, b];
 }
 
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/\n/g, '-')
+    .replace(/ /g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    || 'pixel-text';
+}
+
 // ──────────────────────────────────────────────
 // UI
 // ──────────────────────────────────────────────
@@ -570,6 +581,7 @@ const lineSpacingInput = document.getElementById('line-spacing');
 const canvasEl = document.getElementById('canvas-output');
 const infoBar = document.getElementById('info-bar');
 const statusEl = document.getElementById('status');
+const filenameInput = document.getElementById('filename-input');
 
 document.getElementById('ls-val').textContent = letterSpacingInput.value;
 document.getElementById('sw-val').textContent = spaceWidthInput.value;
@@ -610,8 +622,15 @@ paddingInput.addEventListener('input', () => { document.getElementById('pd-val')
 cellSizeInput.addEventListener('input', () => { document.getElementById('cs-val').textContent = cellSizeInput.value; update(); });
 lineSpacingInput.addEventListener('input', () => { document.getElementById('lsp-val').textContent = lineSpacingInput.value; update(); });
 
-[textInput, onColorInput, offAInput, offBInput].forEach(el => {
+[onColorInput, offAInput, offBInput].forEach(el => {
   el.addEventListener('input', update);
+});
+
+textInput.addEventListener('input', () => {
+  if (document.activeElement !== filenameInput) {
+    filenameInput.value = slugify(textInput.value) + '.png';
+  }
+  update();
 });
 
 document.getElementById('download-btn').addEventListener('click', () => {
