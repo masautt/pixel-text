@@ -180,6 +180,41 @@
     margin-top: 0;
   }
 
+  .download-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .filename-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filename-field .section-label {
+    margin-bottom: 0;
+  }
+
+  input[type=text].filename-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    border-radius: 3px;
+    transition: border-color 0.15s;
+  }
+
+  input[type=text].filename-input:focus {
+    border-color: var(--accent);
+  }
+
   .canvas-area {
     display: flex;
     align-items: center;
