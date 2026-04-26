@@ -4,7 +4,115 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pixel Text — Pixel Font Renderer</title>
+<link rel="icon" type="image/png" href="./favicon.png">
 <style>
+        .modal-yellow {
+          color: var(--accent);
+        }
+        .modal-text-block {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0;
+          width: 100%;
+        }
+        .modal-author-right {
+          align-self: flex-end;
+          margin-top: 8px;
+          font-size: 15px;
+        }
+    .info-icon {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      width: 28px;
+      height: 28px;
+      background: var(--panel);
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 18px;
+      cursor: pointer;
+      z-index: 200;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      transition: background 0.15s, color 0.15s;
+    }
+    .info-icon:hover {
+      background: var(--border);
+      color: #fff;
+        .info-i {
+          color: var(--accent);
+          font-weight: bold;
+        }
+    }
+    .modal-bg {
+      position: absolute;
+      left: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.35);
+      z-index: 1001;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s;
+      pointer-events: auto;
+    }
+
+    /* Ensure modal-bg only covers the canvas-area and is anchored to the right grid column */
+    .canvas-area {
+      position: relative;
+      grid-column: 2 / 3;
+    }
+    .modal {
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 8px;
+      box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+      padding: 48px 28px 24px 28px;
+      max-width: 504px;
+      width: 99vw;
+      min-height: 280px;
+      font-size: 15px;
+      position: relative;
+      text-align: left;
+      display: flex;
+      gap: 28px;
+      align-items: flex-start;
+    }
+    }
+    .modal h2 {
+      margin-top: 0;
+      font-size: 18px;
+      color: var(--accent2);
+      margin-bottom: 12px;
+      white-space: nowrap;
+    }
+    .modal h2.modal-yellow {
+      color: var(--accent) !important;
+      margin-bottom: 18px;
+    }
+    .modal .close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 20px;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .modal .close:hover {
+      color: var(--accent2);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
   @import url('https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Mono:wght@400;600&display=swap');
 
   :root {
@@ -14,7 +122,7 @@
     --accent: #e8ff47;
     --accent2: #ff6b47;
     --text: #e2e2e8;
-    --muted: #666680;
+    --muted: #bfc2d6;
     --panel: #1a1a22;
   }
 
@@ -74,8 +182,8 @@
     font-size: 10px;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 8px;
+    color: #fff;
+    margin-bottom: 18px;
   }
 
   textarea {
@@ -96,21 +204,26 @@
   textarea:focus { border-color: var(--accent); }
 
   .control-row {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: grid;
+    grid-template-columns: 60% 40%;
+    align-items: center;
+    gap: 0 12px;
   }
 
   .control-row label {
     font-size: 11px;
-    color: var(--muted);
+    color: #fff;
     display: flex;
-    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
   }
 
   .control-row label span {
     color: var(--accent);
     font-weight: 600;
+    min-width: 18px;
+    text-align: right;
+    margin-right: 0;
   }
 
   input[type=range] {
@@ -124,8 +237,8 @@
 
   input[type=range]::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width: 14px;
-    height: 14px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
     background: var(--accent);
     cursor: pointer;
@@ -180,6 +293,41 @@
     margin-top: 0;
   }
 
+  .download-row {
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+
+  .filename-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .filename-field .section-label {
+    margin-bottom: 0;
+  }
+
+  input[type=text].filename-input {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    border-radius: 3px;
+    transition: border-color 0.15s;
+  }
+
+  input[type=text].filename-input:focus {
+    border-color: var(--accent);
+  }
+
   .canvas-area {
     display: flex;
     align-items: center;
@@ -232,17 +380,90 @@
 </style>
 </head>
 <body>
+<div class="info-icon" id="info-icon" title="About this project"><span class="info-i">i</span></div>
+<div id="info-modal-bg" class="modal-bg" style="display:none;">
+  <div class="modal" style="display:flex;flex-direction:column;align-items:center;gap:0;">
+    <button class="close" id="info-modal-close" aria-label="Close">&times;</button>
+    <h2 class="modal-yellow" style="align-self:flex-start;margin-bottom:18px;">Why was this created?</h2>
+    <div class="modal-text-block" style="width:100%;margin-bottom:18px;">
+      <p style="text-align:left;margin:0 0 18px 0;">
+        I love cross stitching and wanted a simple way to model out pixel art fonts for small projects.<br><br>
+        Pixel-text lets me quickly visualize text layouts before stitching, no more second guessing myself!
+      </p>
+    </div>
+    <div style="width:100%;display:flex;justify-content:center;margin-bottom:18px;">
+      <img src="./example.jpg" alt="Example cross stitch pixel font output" style="max-width:380px;max-height:400px;border-radius:6px;border:1.5px solid var(--border);box-shadow:0 2px 12px rgba(0,0,0,0.10);background:#222;object-fit:contain;">
+    </div>
+    <a href="https://github.com/masautt" target="_blank" rel="noopener" class="author-link modal-author-right" style="align-self:flex-end;">masautt</a>
+  </div>
+</div>
 
 <header>
   <div class="logo">PIXEL<span>·</span>TEXT</div>
   <div class="tagline">Pixel Font Renderer</div>
+    <a href="https://github.com/masautt/pixel-text" target="_blank" rel="noopener" class="version-link">v1.2</a>
+<style>
+  .version-link {
+    margin-left: auto;
+    color: var(--accent);
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: 600;
+    padding-left: 16px;
+    align-self: flex-start;
+    transition: color 0.15s;
+  }
+  .version-link:hover {
+    color: var(--accent2);
+  }
+  .footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background: none;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 12px 24px;
+    z-index: 100;
+    display: flex;
+    align-items: flex-end;
+    pointer-events: none;
+  }
+  .footer a,
+  .footer-link {
+    color: var(--accent);
+    text-decoration: none;
+    pointer-events: auto;
+    font-weight: 600;
+    margin: 0 8px;
+  }
+  .author-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.15s;
+  }
+  .author-link:hover {
+    color: var(--accent2);
+  }
+  .footer .heart {
+    color: #ff6b47;
+    font-size: 14px;
+    margin: 0 10px;
+    display: inline-block;
+  }
+</style>
+<div class="footer">
+  Made with <span class="heart">♥</span> by <a href="https://github.com/masautt/" target="_blank" rel="noopener" class="footer-link">masautt</a>
+</div>
 </header>
 
 <div class="main">
   <div class="sidebar">
     <div>
       <div class="section-label">Input Text</div>
-      <textarea id="text-input" rows="3" placeholder="Type your text…">Pixels?</textarea>
+      <textarea id="text-input" rows="3" placeholder="Type your text…">Pixels</textarea>
     </div>
 
     <div class="divider"></div>
@@ -250,19 +471,19 @@
     <div>
       <div class="section-label">Spacing</div>
       <div class="control-row">
-        <label>Letter spacing <span id="ls-val">1</span>px</label>
+        <label for="letter-spacing">Letter spacing <span style="flex:1 1 auto"></span><span id="ls-val">1</span>px</label>
         <input type="range" id="letter-spacing" min="0" max="5" value="1">
       </div>
       <div class="control-row" style="margin-top:12px">
-        <label>Space width <span id="sw-val">5</span>px</label>
+        <label for="space-width">Space width <span style="flex:1 1 auto"></span><span id="sw-val">5</span>px</label>
         <input type="range" id="space-width" min="1" max="10" value="5">
       </div>
       <div class="control-row" style="margin-top:12px">
-        <label>Padding <span id="pd-val">2</span>px</label>
+        <label for="padding">Padding <span style="flex:1 1 auto"></span><span id="pd-val">2</span>px</label>
         <input type="range" id="padding" min="0" max="10" value="2">
       </div>
       <div class="control-row" style="margin-top:12px">
-        <label>Line spacing <span id="lsp-val">1</span>px</label>
+        <label for="line-spacing">Line spacing <span style="flex:1 1 auto"></span><span id="lsp-val">1</span>px</label>
         <input type="range" id="line-spacing" min="0" max="10" value="1">
       </div>
     </div>
@@ -272,8 +493,8 @@
     <div id="pixel-controls">
       <div class="section-label">Pixel Grid</div>
       <div class="control-row">
-        <label>Cell size <span id="cs-val">12</span>px</label>
-        <input type="range" id="cell-size" min="4" max="24" value="12">
+        <label for="cell-size">Cell size <span style="flex:1 1 auto"></span><span id="cs-val">15</span>px</label>
+        <input type="range" id="cell-size" min="4" max="24" value="15">
       </div>
       <div class="color-row" style="margin-top:12px">
         <div class="color-field">
@@ -293,7 +514,9 @@
 
     <div id="status"></div>
 
-    <button class="btn btn-secondary" id="download-btn">↓ Download PNG</button>
+    <div class="download-row">
+      <button class="btn btn-secondary" id="download-btn" style="width:100%">↓ Download PNG</button>
+    </div>
   </div>
 
   <div class="canvas-area">
@@ -305,6 +528,20 @@
 </div>
 
 <script>
+// Info modal logic
+const infoIcon = document.getElementById('info-icon');
+const infoModalBg = document.getElementById('info-modal-bg');
+const infoModalClose = document.getElementById('info-modal-close');
+
+infoIcon.addEventListener('click', () => {
+  infoModalBg.style.display = 'flex';
+});
+infoModalBg.addEventListener('click', (e) => {
+  if (e.target === infoModalBg) infoModalBg.style.display = 'none';
+});
+infoModalClose.addEventListener('click', () => {
+  infoModalBg.style.display = 'none';
+});
 // ──────────────────────────────────────────────
 // FONT DATA
 // ──────────────────────────────────────────────
@@ -513,6 +750,17 @@ function hexToRGB(hex) {
   return [r, g, b];
 }
 
+function slugify(text) {
+  return text
+    .toLowerCase()
+    .replace(/\n/g, '-')
+    .replace(/ /g, '-')
+    .replace(/[^a-z0-9-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    || 'pixel-text';
+}
+
 // ──────────────────────────────────────────────
 // UI
 // ──────────────────────────────────────────────
@@ -529,6 +777,7 @@ const lineSpacingInput = document.getElementById('line-spacing');
 const canvasEl = document.getElementById('canvas-output');
 const infoBar = document.getElementById('info-bar');
 const statusEl = document.getElementById('status');
+const filenameInput = document.getElementById('filename-input');
 
 document.getElementById('ls-val').textContent = letterSpacingInput.value;
 document.getElementById('sw-val').textContent = spaceWidthInput.value;
@@ -569,13 +818,17 @@ paddingInput.addEventListener('input', () => { document.getElementById('pd-val')
 cellSizeInput.addEventListener('input', () => { document.getElementById('cs-val').textContent = cellSizeInput.value; update(); });
 lineSpacingInput.addEventListener('input', () => { document.getElementById('lsp-val').textContent = lineSpacingInput.value; update(); });
 
-[textInput, onColorInput, offAInput, offBInput].forEach(el => {
+
+[onColorInput, offAInput, offBInput].forEach(el => {
   el.addEventListener('input', update);
 });
 
+textInput.addEventListener('input', update);
+
 document.getElementById('download-btn').addEventListener('click', () => {
+  const filename = slugify(textInput.value) + '.png';
   const link = document.createElement('a');
-  link.download = 'pixel-text.png';
+  link.download = filename;
   link.href = canvasEl.toDataURL('image/png');
   link.click();
 });
