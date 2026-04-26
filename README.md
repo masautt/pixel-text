@@ -1,8 +1,14 @@
+# Version 1.2
+
+## Changes
+
+- Fixed ADA (accessibility) issues
+- Added favicon
 # Pixel·TEXT — Pixel Font Renderer
 
 > A zero-dependency, single-file pixel font renderer that converts text into stylized bitmap art and exports it as a PNG.
 
-![App Overview](./imgs/overview.svg)
+![App Demo](./imgs/demo.png)
 
 ---
 
@@ -34,7 +40,7 @@ npx serve .
 
 The UI is split into two zones: a **controls sidebar** on the left, and a **live canvas preview** on the right.
 
-![Controls Panel](./imgs/controls.svg)
+![Controls Panel](./imgs/controls.png)
 
 ### Controls Reference
 
