@@ -616,6 +616,15 @@ const GLYPHS = {
   '{': { rows: ['0011','0100','0100','1000','0100','0100','0011'], width: 4, descender: 0 },
   '}': { rows: ['1100','0010','0010','0001','0010','0010','1100'], width: 4, descender: 0 },
 
+  // Spanish accented uppercase (ascender:3 — accent row, accent row, gap row, then 7-row body)
+  'Á': { rows: ['00100','00010','00000','01110','10001','11111','10001','10001','10001','10001'], width: 5, ascender: 3, descender: 0 },
+  'É': { rows: ['00100','00010','00000','11111','10000','11110','10000','10000','10000','11111'], width: 5, ascender: 3, descender: 0 },
+  'Í': { rows: ['010','001','000','111','010','010','010','010','010','111'], width: 3, ascender: 3, descender: 0 },
+  'Ó': { rows: ['00100','00010','00000','01110','10001','10001','10001','10001','10001','01110'], width: 5, ascender: 3, descender: 0 },
+  'Ú': { rows: ['00100','00010','00000','10001','10001','10001','10001','10001','10001','01110'], width: 5, ascender: 3, descender: 0 },
+  'Ü': { rows: ['01010','00000','10001','10001','10001','10001','10001','10001','01110'], width: 5, ascender: 2, descender: 0 },
+  'Ñ': { rows: ['01100','00110','00000','10001','11001','10101','10011','10001','10001','10001'], width: 5, ascender: 3, descender: 0 },
+
   'a': { rows: ['00000','00000','01110','00001','01111','10001','01111'], width: 5, descender: 0 },
   'b': { rows: ['10000','10000','10110','11001','10001','10001','11110'], width: 5, descender: 0 },
   'c': { rows: ['00000','00000','01110','10001','10000','10001','01110'], width: 5, descender: 0 },
@@ -642,6 +651,19 @@ const GLYPHS = {
   'x': { rows: ['00000','00000','10001','01010','00100','01010','10001'], width: 5, descender: 0 },
   'y': { rows: ['00000','00000','10001','10001','10001','01111','00001','11110'], width: 5, descender: 1 },
   'z': { rows: ['00000','00000','11111','00010','00100','01000','11111'], width: 5, descender: 0 },
+
+  // Spanish accented lowercase (ascender:1 — accent row, accent row, gap row, then 5-row body)
+  'á': { rows: ['00100','00010','00000','01110','00001','01111','10001','01111'], width: 5, ascender: 1, descender: 0 },
+  'é': { rows: ['00100','00010','00000','01110','10001','11111','10000','01110'], width: 5, ascender: 1, descender: 0 },
+  'í': { rows: ['010','001','000','010','010','010','010','010'], width: 3, ascender: 1, descender: 0 },
+  'ó': { rows: ['00100','00010','00000','01110','10001','10001','10001','01110'], width: 5, ascender: 1, descender: 0 },
+  'ú': { rows: ['00100','00010','00000','10001','10001','10001','10011','01101'], width: 5, ascender: 1, descender: 0 },
+  'ü': { rows: ['01010','00000','10001','10001','10001','10011','01101'], width: 5, ascender: 0, descender: 0 },
+  'ñ': { rows: ['01100','00110','00000','10110','11001','10001','10001','10001'], width: 5, ascender: 1, descender: 0 },
+
+  // Spanish punctuation
+  '¡': { rows: ['1','0','1','1','1','1','1'], width: 1, descender: 0 },
+  '¿': { rows: ['00100','00000','00100','01100','10000','10001','01110'], width: 5, descender: 0 },
 };
 
 // ──────────────────────────────────────────────
@@ -654,13 +676,15 @@ function renderLine(line, opts) {
   const nonSpaceChars = chars.filter(c => c !== ' ' && GLYPHS[c]);
 
   let maxDescender = 0;
+  let maxAscender = 0;
   for (const c of chars) {
     if (c !== ' ' && GLYPHS[c]) {
       maxDescender = Math.max(maxDescender, GLYPHS[c].descender);
+      maxAscender = Math.max(maxAscender, GLYPHS[c].ascender || 0);
     }
   }
 
-  const totalRows = padding + 7 + maxDescender + padding;
+  const totalRows = padding + maxAscender + 7 + maxDescender + padding;
 
   // compute total cols
   let totalCols = padding * 2;
@@ -684,7 +708,7 @@ function renderLine(line, opts) {
     grid.push(new Uint8Array(totalCols));
   }
 
-  for (let pr = 0; pr < 7 + maxDescender; pr++) {
+  for (let pr = 0; pr < maxAscender + 7 + maxDescender; pr++) {
     const canvasRow = pr + padding;
     let cx = padding;
 
@@ -694,16 +718,17 @@ function renderLine(line, opts) {
         cx += spaceWidth;
       } else if (GLYPHS[c]) {
         const g = GLYPHS[c];
-        if (pr < g.rows.length) {
+        const glyphRow = pr - (maxAscender - (g.ascender || 0));
+        if (glyphRow >= 0 && glyphRow < g.rows.length) {
           for (let px = 0; px < g.width; px++) {
-            grid[canvasRow][cx + px] = g.rows[pr][px] === '1' ? 1 : 0;
+            grid[canvasRow][cx + px] = g.rows[glyphRow][px] === '1' ? 1 : 0;
           }
         }
         cx += g.width;
         if (ci < chars.length - 1) cx += letterSpacing;
       } else {
         // placeholder 5×7 solid block
-        if (pr < 7) {
+        if (pr >= maxAscender && pr < maxAscender + 7) {
           for (let px = 0; px < 5; px++) grid[canvasRow][cx + px] = 1;
         }
         cx += 5;
