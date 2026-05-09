@@ -226,6 +226,7 @@
   }
 
   input[type=range] {
+    appearance: none;
     -webkit-appearance: none;
     width: 100%;
     height: 4px;
@@ -328,6 +329,7 @@
   }
 
   .canvas-area {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -349,11 +351,88 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 0;
     max-width: 100%;
   }
 
+  .canvas-hud {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 130;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+
   .canvas-area::-webkit-scrollbar { display: none; }
+
+  .recenter-btn {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(20, 20, 24, 0.92);
+    color: var(--text);
+    cursor: pointer;
+    z-index: 140;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: transform 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  }
+
+  .recenter-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .recenter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .recenter-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .recenter-icon::before,
+  .recenter-icon::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+  }
+
+  .recenter-icon::before {
+    left: 50%;
+    top: 2px;
+    width: 1.5px;
+    height: 10px;
+    transform: translateX(-50%);
+  }
+
+  .recenter-icon::after {
+    top: 50%;
+    left: 2px;
+    width: 10px;
+    height: 1.5px;
+    transform: translateY(-50%);
+  }
 
   #canvas-output {
     image-rendering: pixelated;
@@ -367,6 +446,11 @@
     color: var(--muted);
     letter-spacing: 1px;
     text-transform: uppercase;
+    background: rgba(20, 20, 24, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 10px;
+    white-space: nowrap;
   }
 
   .divider {
@@ -403,21 +487,173 @@
 <header>
   <div class="logo">PIXEL<span>·</span>TEXT</div>
   <div class="tagline">Pixel Font Renderer</div>
-    <a href="https://github.com/masautt/pixel-text" target="_blank" rel="noopener" class="version-link">v1.2</a>
+  <button class="version-link" id="open-changelog" aria-label="Open release notes">v1.3</button>
 <style>
   .version-link {
     margin-left: auto;
+    font-family: 'IBM Plex Mono', monospace;
     color: var(--accent);
-    font-size: 13px;
+    background: transparent;
+    border: none;
+    font-size: 12px;
+    padding: 0;
+    letter-spacing: 0.8px;
+    cursor: pointer;
     text-decoration: none;
-    font-weight: 600;
-    padding-left: 16px;
     align-self: flex-start;
     transition: color 0.15s;
   }
+
   .version-link:hover {
     color: var(--accent2);
   }
+
+  .changelog-modal {
+    max-width: 860px;
+    width: min(96vw, 860px);
+    min-height: 320px;
+    display: block;
+    padding: 22px 24px 18px;
+    max-height: 80vh;
+    overflow: auto;
+  }
+
+  .changelog-layout {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 14px;
+    align-items: start;
+  }
+
+  .release-sidebar {
+    border-right: 1px solid var(--border);
+    padding-right: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .release-tab {
+    width: 100%;
+    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
+    padding: 10px;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .release-tab:hover {
+    border-color: var(--accent);
+  }
+
+  .release-tab.active {
+    background: rgba(232, 255, 71, 0.1);
+    border-color: var(--accent);
+  }
+
+  .release-tab-version {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .release-tab-meta {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .release-content {
+    min-height: 250px;
+  }
+
+  .release-detail-panel {
+    display: none;
+  }
+
+  .release-detail-panel.active {
+    display: block;
+  }
+
+  .release-detail-title {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 4px;
+  }
+
+  .release-detail-date {
+    color: var(--muted);
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+
+  .release-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .release-link:hover {
+    color: var(--accent2);
+  }
+
+  .changelog-header {
+    margin-bottom: 14px;
+  }
+
+  .changelog-title {
+    color: var(--accent);
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .changelog-subtitle {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .release-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .release-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .release-version {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .release-date {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .release-list {
+    padding-left: 18px;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .release-list li {
+    margin-bottom: 6px;
+  }
+
   .footer {
     position: fixed;
     left: 0;
@@ -522,10 +758,62 @@
   </div>
 
   <div class="canvas-area">
-    <div id="output-container">
+    <div class="canvas-hud" aria-live="polite">
       <div class="info-bar" id="info-bar">—</div>
+      <div class="info-bar" id="coord-bar">—</div>
+    </div>
+    <div id="output-container">
       <canvas id="canvas-output"></canvas>
-      <div class="info-bar" id="coord-bar"></div>
+    </div>
+    <button class="recenter-btn" id="recenter-btn" type="button" aria-label="Recenter canvas view" title="Recenter view">
+      <span class="recenter-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+</div>
+
+<div id="changelog-modal-bg" class="modal-bg" style="display:none;">
+  <div class="modal changelog-modal">
+    <button class="close" id="changelog-modal-close" aria-label="Close">&times;</button>
+    <div class="changelog-header">
+      <h2 class="changelog-title">Release Notes</h2>
+      <p class="changelog-subtitle">Newest release first, based on GitHub tags and release logs.</p>
+    </div>
+
+    <div class="changelog-layout">
+      <aside class="release-sidebar" aria-label="Release versions">
+        <button class="release-tab active" data-release="v1.3" aria-pressed="true">
+          <div class="release-tab-version">v1.3</div>
+          <div class="release-tab-meta">Spanish glyphs + canvas polish</div>
+        </button>
+        <button class="release-tab" data-release="v1.2" aria-pressed="false">
+          <div class="release-tab-version">v1.2</div>
+          <div class="release-tab-meta">Filename input + accessibility</div>
+        </button>
+      </aside>
+
+      <section class="release-content" aria-live="polite">
+        <article class="release-detail-panel active" data-release-panel="v1.3">
+          <h3 class="release-detail-title">v1.3</h3>
+          <div class="release-detail-date">Released 2026-05-08</div>
+          <ul class="release-list">
+            <li>Added Spanish accented letters and punctuation across the glyph set.</li>
+            <li>Improved canvas interaction with smoother scroll and hover behavior.</li>
+            <li>Expanded symbols and punctuation coverage from related glyph updates.</li>
+            <li><a class="release-link" href="https://github.com/masautt/pixel-text/compare/1.2...1.3" target="_blank" rel="noopener">Compare v1.2 to v1.3</a></li>
+          </ul>
+        </article>
+
+        <article class="release-detail-panel" data-release-panel="v1.2">
+          <h3 class="release-detail-title">v1.2</h3>
+          <div class="release-detail-date">Released 2026-04-26</div>
+          <ul class="release-list">
+            <li>Added editable PNG filename input with auto-populated slugified defaults.</li>
+            <li>Improved accessibility and visual contrast across the control panel.</li>
+            <li>Added favicon, about modal, footer attribution, and visible version label.</li>
+            <li>Documented filename-input design and implementation details.</li>
+          </ul>
+        </article>
+      </section>
     </div>
   </div>
 </div>
@@ -535,6 +823,11 @@
 const infoIcon = document.getElementById('info-icon');
 const infoModalBg = document.getElementById('info-modal-bg');
 const infoModalClose = document.getElementById('info-modal-close');
+const openChangelogBtn = document.getElementById('open-changelog');
+const changelogModalBg = document.getElementById('changelog-modal-bg');
+const changelogModalClose = document.getElementById('changelog-modal-close');
+const releaseTabs = Array.from(document.querySelectorAll('.release-tab'));
+const releasePanels = Array.from(document.querySelectorAll('.release-detail-panel'));
 
 infoIcon.addEventListener('click', () => {
   infoModalBg.style.display = 'flex';
@@ -544,6 +837,39 @@ infoModalBg.addEventListener('click', (e) => {
 });
 infoModalClose.addEventListener('click', () => {
   infoModalBg.style.display = 'none';
+});
+
+openChangelogBtn.addEventListener('click', () => {
+  changelogModalBg.style.display = 'flex';
+});
+
+changelogModalBg.addEventListener('click', (e) => {
+  if (e.target === changelogModalBg) changelogModalBg.style.display = 'none';
+});
+
+changelogModalClose.addEventListener('click', () => {
+  changelogModalBg.style.display = 'none';
+});
+
+releaseTabs.forEach((tab) => {
+  tab.addEventListener('click', () => {
+    const version = tab.getAttribute('data-release');
+    releaseTabs.forEach((t) => {
+      const isActive = t === tab;
+      t.classList.toggle('active', isActive);
+      t.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+    });
+    releasePanels.forEach((panel) => {
+      panel.classList.toggle('active', panel.getAttribute('data-release-panel') === version);
+    });
+  });
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (changelogModalBg.style.display === 'flex') changelogModalBg.style.display = 'none';
+    if (infoModalBg.style.display === 'flex') infoModalBg.style.display = 'none';
+  }
 });
 // ──────────────────────────────────────────────
 // FONT DATA
@@ -843,6 +1169,13 @@ function slugify(text) {
 
 let hoveredCell = null;
 let lastImageData = null;
+let isRightPanning = false;
+let rightPanPointerId = null;
+let panLastX = 0;
+let panLastY = 0;
+let viewportOffsetX = 0;
+let viewportOffsetY = 0;
+let activePanButton = null;
 
 function drawHighlight(canvas, col, row, cellSize) {
   if (!lastImageData) return;
@@ -865,10 +1198,32 @@ const offAInput = document.getElementById('off-a-color');
 const offBInput = document.getElementById('off-b-color');
 const lineSpacingInput = document.getElementById('line-spacing');
 const canvasEl = document.getElementById('canvas-output');
+const canvasArea = document.querySelector('.canvas-area');
+const outputContainer = document.getElementById('output-container');
+const recenterBtn = document.getElementById('recenter-btn');
 const infoBar = document.getElementById('info-bar');
 const statusEl = document.getElementById('status');
 const filenameInput = document.getElementById('filename-input');
 const coordBar = document.getElementById('coord-bar');
+
+function applyViewportTransform() {
+  outputContainer.style.transform = `translate(${viewportOffsetX}px, ${viewportOffsetY}px)`;
+  updateRecenterVisibility();
+}
+
+function updateRecenterVisibility() {
+  const hasOffset = Math.abs(viewportOffsetX) > 0.5 || Math.abs(viewportOffsetY) > 0.5;
+  const hasScrollOffset = canvasArea.scrollLeft !== 0 || canvasArea.scrollTop !== 0;
+  recenterBtn.classList.toggle('visible', hasOffset || hasScrollOffset);
+}
+
+function recenterViewport() {
+  viewportOffsetX = 0;
+  viewportOffsetY = 0;
+  canvasArea.scrollLeft = 0;
+  canvasArea.scrollTop = 0;
+  applyViewportTransform();
+}
 
 document.getElementById('ls-val').textContent = letterSpacingInput.value;
 document.getElementById('sw-val').textContent = spaceWidthInput.value;
@@ -915,6 +1270,10 @@ lineSpacingInput.addEventListener('input', () => { document.getElementById('lsp-
 });
 
 textInput.addEventListener('input', update);
+recenterBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  recenterViewport();
+});
 
 document.getElementById('download-btn').addEventListener('click', () => {
   const filename = slugify(textInput.value) + '.png';
@@ -924,7 +1283,7 @@ document.getElementById('download-btn').addEventListener('click', () => {
   link.click();
 });
 
-document.querySelector('.canvas-area').addEventListener('wheel', (e) => {
+canvasArea.addEventListener('wheel', (e) => {
   e.preventDefault();
   const min = parseInt(cellSizeInput.min);
   const max = parseInt(cellSizeInput.max);
@@ -936,7 +1295,64 @@ document.querySelector('.canvas-area').addEventListener('wheel', (e) => {
   update();
 }, { passive: false });
 
+canvasArea.addEventListener('pointerdown', (e) => {
+  if (e.target.closest('#recenter-btn')) return;
+  if (e.button !== 0 && e.button !== 2) return;
+  isRightPanning = true;
+  activePanButton = e.button;
+  rightPanPointerId = e.pointerId;
+  panLastX = e.clientX;
+  panLastY = e.clientY;
+  canvasArea.style.cursor = 'grabbing';
+  outputContainer.style.cursor = 'grabbing';
+  canvasArea.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+
+canvasArea.addEventListener('pointermove', (e) => {
+  if (!isRightPanning || e.pointerId !== rightPanPointerId) return;
+  const requiredMask = activePanButton === 2 ? 2 : 1;
+  if ((e.buttons & requiredMask) !== requiredMask) {
+    stopRightPan();
+    return;
+  }
+  const dx = e.clientX - panLastX;
+  const dy = e.clientY - panLastY;
+  viewportOffsetX += dx;
+  viewportOffsetY += dy;
+  applyViewportTransform();
+  panLastX = e.clientX;
+  panLastY = e.clientY;
+  e.preventDefault();
+});
+
+function stopRightPan() {
+  isRightPanning = false;
+  rightPanPointerId = null;
+  activePanButton = null;
+  canvasArea.style.cursor = '';
+  outputContainer.style.cursor = '';
+}
+
+canvasArea.addEventListener('pointerup', (e) => {
+  if (!isRightPanning || e.pointerId !== rightPanPointerId) return;
+  stopRightPan();
+});
+
+canvasArea.addEventListener('pointercancel', (e) => {
+  if (!isRightPanning || e.pointerId !== rightPanPointerId) return;
+  stopRightPan();
+});
+
+canvasArea.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+});
+
+window.addEventListener('blur', stopRightPan);
+canvasArea.addEventListener('scroll', updateRecenterVisibility, { passive: true });
+
 canvasEl.addEventListener('mousemove', (e) => {
+  if (isRightPanning) return;
   const cellSize = parseInt(cellSizeInput.value);
   const col = Math.floor(e.offsetX / cellSize);
   const row = Math.floor(e.offsetY / cellSize);
@@ -956,6 +1372,7 @@ canvasEl.addEventListener('mouseleave', () => {
 });
 
 update();
+updateRecenterVisibility();
 </script>
 </body>
 </html>
