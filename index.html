@@ -332,7 +332,8 @@
     align-items: center;
     justify-content: center;
     padding: 32px;
-    overflow: auto;
+    overflow: scroll;
+    scrollbar-width: none;
     background:
       repeating-linear-gradient(
         45deg,
@@ -351,6 +352,8 @@
     gap: 16px;
     max-width: 100%;
   }
+
+  .canvas-area::-webkit-scrollbar { display: none; }
 
   #canvas-output {
     image-rendering: pixelated;
@@ -493,7 +496,7 @@
       <div class="section-label">Pixel Grid</div>
       <div class="control-row">
         <label for="cell-size">Cell size <span style="flex:1 1 auto"></span><span id="cs-val">15</span>px</label>
-        <input type="range" id="cell-size" min="4" max="24" value="15">
+        <input type="range" id="cell-size" min="4" max="50" value="15">
       </div>
       <div class="color-row" style="margin-top:12px">
         <div class="color-field">
@@ -522,6 +525,7 @@
     <div id="output-container">
       <div class="info-bar" id="info-bar">—</div>
       <canvas id="canvas-output"></canvas>
+      <div class="info-bar" id="coord-bar"></div>
     </div>
   </div>
 </div>
@@ -808,6 +812,10 @@ function renderPixelCanvas(canvas, text, opts) {
   }
 
   ctx.putImageData(imageData, 0, 0);
+  lastImageData = imageData;
+  if (hoveredCell) {
+    drawHighlight(canvas, hoveredCell.col, hoveredCell.row, cellSize);
+  }
   return { totalRows, totalCols };
 }
 
@@ -833,6 +841,20 @@ function slugify(text) {
 // UI
 // ──────────────────────────────────────────────
 
+let hoveredCell = null;
+let lastImageData = null;
+
+function drawHighlight(canvas, col, row, cellSize) {
+  if (!lastImageData) return;
+  const ctx = canvas.getContext('2d');
+  ctx.putImageData(lastImageData, 0, 0);
+  ctx.save();
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = '#e8ff47';
+  ctx.fillRect(col * cellSize, row * cellSize, cellSize - 1, cellSize - 1);
+  ctx.restore();
+}
+
 const textInput = document.getElementById('text-input');
 const letterSpacingInput = document.getElementById('letter-spacing');
 const spaceWidthInput = document.getElementById('space-width');
@@ -846,6 +868,7 @@ const canvasEl = document.getElementById('canvas-output');
 const infoBar = document.getElementById('info-bar');
 const statusEl = document.getElementById('status');
 const filenameInput = document.getElementById('filename-input');
+const coordBar = document.getElementById('coord-bar');
 
 document.getElementById('ls-val').textContent = letterSpacingInput.value;
 document.getElementById('sw-val').textContent = spaceWidthInput.value;
@@ -899,6 +922,37 @@ document.getElementById('download-btn').addEventListener('click', () => {
   link.download = filename;
   link.href = canvasEl.toDataURL('image/png');
   link.click();
+});
+
+document.querySelector('.canvas-area').addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const min = parseInt(cellSizeInput.min);
+  const max = parseInt(cellSizeInput.max);
+  const current = parseInt(cellSizeInput.value);
+  const next = Math.min(max, Math.max(min, current + (e.deltaY < 0 ? 1 : -1)));
+  if (next === current) return;
+  cellSizeInput.value = next;
+  document.getElementById('cs-val').textContent = next;
+  update();
+}, { passive: false });
+
+canvasEl.addEventListener('mousemove', (e) => {
+  const cellSize = parseInt(cellSizeInput.value);
+  const col = Math.floor(e.offsetX / cellSize);
+  const row = Math.floor(e.offsetY / cellSize);
+  if (!hoveredCell || hoveredCell.col !== col || hoveredCell.row !== row) {
+    hoveredCell = { col, row };
+    coordBar.textContent = `(${col}, ${row})`;
+    drawHighlight(canvasEl, col, row, cellSize);
+  }
+});
+
+canvasEl.addEventListener('mouseleave', () => {
+  hoveredCell = null;
+  coordBar.textContent = '—';
+  if (lastImageData) {
+    canvasEl.getContext('2d').putImageData(lastImageData, 0, 0);
+  }
 });
 
 update();
