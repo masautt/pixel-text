@@ -565,7 +565,7 @@
   <div class="logo">PIXEL<span>·</span>TEXT</div>
   <div class="header-right">
     <div class="tagline">Pixel Font Renderer</div>
-    <button class="version-link" id="open-changelog" aria-label="Open release notes">v1.3</button>
+    <button class="version-link" id="open-changelog" aria-label="Open release notes">v1.4</button>
   </div>
 <style>
   .header-right {
@@ -734,6 +734,107 @@
     margin-bottom: 6px;
   }
 
+  .changelog-desktop {
+    display: none;
+  }
+
+  @media (min-width: 641px) {
+    .changelog-modal {
+      width: 680px;
+      max-width: 680px;
+      height: 460px;
+      max-height: none;
+      overflow: hidden;
+    }
+
+    .changelog-accordion {
+      display: none;
+    }
+
+    .changelog-desktop {
+      display: flex;
+      height: 100%;
+    }
+
+    .changelog-sidenav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 96px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      padding-right: 14px;
+      margin-right: 20px;
+    }
+
+    .sidenav-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .snav-ver {
+      font-size: 13px;
+      font-weight: 600;
+      color: inherit;
+    }
+
+    .snav-date {
+      font-size: 10px;
+    }
+
+    .sidenav-btn.active {
+      color: var(--accent);
+      background: rgba(232, 255, 71, 0.07);
+    }
+
+    .sidenav-btn:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .changelog-main {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .changelog-panel {
+      display: none;
+    }
+
+    .changelog-panel.active {
+      display: block;
+    }
+
+    .panel-version {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .panel-tagline {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .panel-date {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+  }
+
   .footer {
     position: fixed;
     left: 0;
@@ -834,11 +935,90 @@
     <button class="close" id="changelog-modal-close" aria-label="Close">&times;</button>
     <div class="changelog-header">
       <h2 class="changelog-title">Release Notes</h2>
-      <p class="changelog-subtitle">Newest release first, based on GitHub tags and release logs.</p>
     </div>
 
+    <!-- Desktop: sidenav + main panel -->
+    <div class="changelog-desktop">
+      <nav class="changelog-sidenav">
+        <button class="sidenav-btn active" data-target="panel-v14">
+          <span class="snav-ver">v1.4</span>
+          <span class="snav-date">2026-05-09</span>
+        </button>
+        <button class="sidenav-btn" data-target="panel-v13">
+          <span class="snav-ver">v1.3</span>
+          <span class="snav-date">2026-05-08</span>
+        </button>
+        <button class="sidenav-btn" data-target="panel-v12">
+          <span class="snav-ver">v1.2</span>
+          <span class="snav-date">2026-04-26</span>
+        </button>
+      </nav>
+      <div class="changelog-main">
+        <div class="changelog-panel active" id="panel-v14">
+          <div class="panel-version">v1.4</div>
+          <div class="panel-tagline">Changelog, responsive design &amp; canvas interaction</div>
+          <div class="panel-date">2026-05-09</div>
+          <ul class="release-list">
+            <li>Added Release Notes modal (this menu) accessible via the version badge.</li>
+            <li>Added responsive mobile layout — sidebar stacks above canvas at narrow widths.</li>
+            <li>Added canvas pan via left- or right-click drag, with a recenter button that fades in when the view is offset.</li>
+            <li>Added two-finger pinch-to-zoom on touch devices.</li>
+            <li>Added Reset button that appears in the Input Text header whenever sliders deviate from defaults.</li>
+            <li>Removed pixel grid controls (cell size slider, color pickers) — cell size is now scroll/pinch only; colors are fixed.</li>
+            <li>Moved info bar to a floating HUD overlay above the canvas.</li>
+            <li>Added Escape key support to close all modals.</li>
+            <li>Added <code>npm run dev</code> workflow with nodemon for local development.</li>
+          </ul>
+        </div>
+        <div class="changelog-panel" id="panel-v13">
+          <div class="panel-version">v1.3</div>
+          <div class="panel-tagline">Spanish glyphs + canvas polish</div>
+          <div class="panel-date">2026-05-08</div>
+          <ul class="release-list">
+            <li>Added Spanish accented letters and punctuation across the glyph set.</li>
+            <li>Improved canvas interaction with smoother scroll and hover behavior.</li>
+            <li>Expanded symbols and punctuation coverage from related glyph updates.</li>
+          </ul>
+        </div>
+        <div class="changelog-panel" id="panel-v12">
+          <div class="panel-version">v1.2</div>
+          <div class="panel-tagline">Filename input + accessibility</div>
+          <div class="panel-date">2026-04-26</div>
+          <ul class="release-list">
+            <li>Added editable PNG filename input with auto-populated slugified defaults.</li>
+            <li>Improved accessibility and visual contrast across the control panel.</li>
+            <li>Added favicon, about modal, footer attribution, and visible version label.</li>
+            <li>Documented filename-input design and implementation details.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: accordion -->
     <div class="changelog-accordion">
       <details class="release-item" open>
+        <summary class="release-summary">
+          <span class="release-summary-version">v1.4</span>
+          <span class="release-summary-meta">Changelog, responsive design &amp; canvas interaction</span>
+          <span class="release-summary-date">2026-05-09</span>
+          <span class="release-summary-chevron">▾</span>
+        </summary>
+        <div class="release-body">
+          <ul class="release-list">
+            <li>Added Release Notes modal (this menu) accessible via the version badge.</li>
+            <li>Added responsive mobile layout — sidebar stacks above canvas at narrow widths.</li>
+            <li>Added canvas pan via left- or right-click drag, with a recenter button that fades in when the view is offset.</li>
+            <li>Added two-finger pinch-to-zoom on touch devices.</li>
+            <li>Added Reset button that appears in the Input Text header whenever sliders deviate from defaults.</li>
+            <li>Removed pixel grid controls (cell size slider, color pickers) — cell size is now scroll/pinch only; colors are fixed.</li>
+            <li>Moved info bar to a floating HUD overlay above the canvas.</li>
+            <li>Added Escape key support to close all modals.</li>
+            <li>Added <code>npm run dev</code> workflow with nodemon for local development.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="release-item">
         <summary class="release-summary">
           <span class="release-summary-version">v1.3</span>
           <span class="release-summary-meta">Spanish glyphs + canvas polish</span>
@@ -850,7 +1030,6 @@
             <li>Added Spanish accented letters and punctuation across the glyph set.</li>
             <li>Improved canvas interaction with smoother scroll and hover behavior.</li>
             <li>Expanded symbols and punctuation coverage from related glyph updates.</li>
-            <li><a class="release-link" href="https://github.com/masautt/pixel-text/compare/1.2...1.3" target="_blank" rel="noopener">Compare v1.2 to v1.3</a></li>
           </ul>
         </div>
       </details>
@@ -910,6 +1089,25 @@ document.addEventListener('keydown', (e) => {
     if (changelogModalBg.style.display === 'flex') changelogModalBg.style.display = 'none';
     if (infoModalBg.style.display === 'flex') infoModalBg.style.display = 'none';
   }
+});
+
+document.querySelectorAll('.release-item').forEach((item) => {
+  item.addEventListener('toggle', () => {
+    if (item.open) {
+      document.querySelectorAll('.release-item').forEach((other) => {
+        if (other !== item) other.removeAttribute('open');
+      });
+    }
+  });
+});
+
+document.querySelectorAll('.sidenav-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sidenav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.changelog-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
 });
 // ──────────────────────────────────────────────
 // FONT DATA
