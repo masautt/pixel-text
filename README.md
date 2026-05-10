@@ -23,11 +23,18 @@ No libraries. No build step. Drop `index.html` in a browser and go.
 ## Quick Start
 
 ```bash
-# No installation needed — just open the file
-open index.html
+# Install dev dependency once
+npm install
+
+# Start local dev server (restarts on file changes)
+npm run dev
+# → http://localhost:8000
+
+# Or run one-off local server
+npm start
 ```
 
-Or host it anywhere static:
+For GitHub Pages (or any static host), you still only need the static files:
 
 ```bash
 npx serve .

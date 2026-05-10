@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Pixel Text — Pixel Font Renderer</title>
 <link rel="icon" type="image/png" href="./favicon.png">
 <style>
@@ -24,7 +24,7 @@
     .info-icon {
       position: fixed;
       right: 24px;
-      bottom: 24px;
+      bottom: max(24px, calc(16px + env(safe-area-inset-bottom)));
       width: 28px;
       height: 28px;
       background: var(--panel);
@@ -226,6 +226,7 @@
   }
 
   input[type=range] {
+    appearance: none;
     -webkit-appearance: none;
     width: 100%;
     height: 4px;
@@ -298,6 +299,38 @@
     align-items: flex-end;
   }
 
+  .input-text-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+  }
+
+  .input-text-header .section-label {
+    margin-bottom: 0;
+  }
+
+  #reset-btn {
+    display: none;
+    padding: 3px 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  #reset-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
   .filename-field {
     display: flex;
     flex-direction: column;
@@ -328,6 +361,7 @@
   }
 
   .canvas-area {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -349,11 +383,88 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16px;
+    gap: 0;
     max-width: 100%;
   }
 
+  .canvas-hud {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 130;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+  }
+
   .canvas-area::-webkit-scrollbar { display: none; }
+
+  .recenter-btn {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: rgba(20, 20, 24, 0.92);
+    color: var(--text);
+    cursor: pointer;
+    z-index: 140;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: transform 0.15s, border-color 0.15s, color 0.15s, opacity 0.15s;
+  }
+
+  .recenter-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+
+  .recenter-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-1px);
+  }
+
+  .recenter-icon {
+    position: relative;
+    width: 16px;
+    height: 16px;
+    border: 1.5px solid currentColor;
+    border-radius: 50%;
+  }
+
+  .recenter-icon::before,
+  .recenter-icon::after {
+    content: '';
+    position: absolute;
+    background: currentColor;
+  }
+
+  .recenter-icon::before {
+    left: 50%;
+    top: 2px;
+    width: 1.5px;
+    height: 10px;
+    transform: translateX(-50%);
+  }
+
+  .recenter-icon::after {
+    top: 50%;
+    left: 2px;
+    width: 10px;
+    height: 1.5px;
+    transform: translateY(-50%);
+  }
 
   #canvas-output {
     image-rendering: pixelated;
@@ -367,6 +478,11 @@
     color: var(--muted);
     letter-spacing: 1px;
     text-transform: uppercase;
+    background: rgba(20, 20, 24, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 10px;
+    white-space: nowrap;
   }
 
   .divider {
@@ -378,6 +494,51 @@
     font-size: 11px;
     color: var(--accent2);
     min-height: 16px;
+  }
+
+
+  @media (max-width: 640px) {
+    header {
+      padding: 12px 16px 10px;
+      gap: 10px;
+    }
+
+    .tagline {
+      display: none;
+    }
+
+    .main {
+      grid-template-columns: 1fr;
+      grid-template-rows: auto 1fr;
+    }
+
+    .sidebar {
+      border-right: none;
+      border-bottom: 1px solid var(--border);
+      max-height: 45vh;
+      overflow-y: auto;
+      padding: 14px 16px;
+      gap: 12px;
+    }
+
+    .sidebar .section-label {
+      margin-bottom: 10px;
+    }
+
+    .sidebar .control-row[style] {
+      margin-top: 8px !important;
+    }
+
+    .canvas-area {
+      grid-column: auto;
+      min-height: 50vh;
+    }
+
+
+    .changelog-modal {
+      padding: 16px 14px 14px;
+      max-height: 88vh;
+    }
   }
 </style>
 </head>
@@ -402,22 +563,278 @@
 
 <header>
   <div class="logo">PIXEL<span>·</span>TEXT</div>
-  <div class="tagline">Pixel Font Renderer</div>
-    <a href="https://github.com/masautt/pixel-text" target="_blank" rel="noopener" class="version-link">v1.2</a>
+  <div class="header-right">
+    <div class="tagline">Pixel Font Renderer</div>
+    <button class="version-link" id="open-changelog" aria-label="Open release notes">v1.4</button>
+  </div>
 <style>
-  .version-link {
+  .header-right {
     margin-left: auto;
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+
+  .version-link {
+    font-family: 'IBM Plex Mono', monospace;
     color: var(--accent);
-    font-size: 13px;
+    background: transparent;
+    border: none;
+    font-size: 12px;
+    padding: 0;
+    letter-spacing: 0.8px;
+    cursor: pointer;
     text-decoration: none;
-    font-weight: 600;
-    padding-left: 16px;
-    align-self: flex-start;
     transition: color 0.15s;
   }
+
   .version-link:hover {
     color: var(--accent2);
   }
+
+  .changelog-modal {
+    max-width: 540px;
+    width: min(96vw, 540px);
+    display: block;
+    padding: 22px 24px 18px;
+    max-height: 85vh;
+    overflow: auto;
+  }
+
+  .changelog-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .release-item {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .release-item[open] {
+    border-color: var(--accent);
+  }
+
+  .release-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 12px;
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .release-summary::-webkit-details-marker { display: none; }
+
+  .release-item[open] .release-summary {
+    border-bottom: 1px solid var(--border);
+    background: rgba(232, 255, 71, 0.07);
+  }
+
+  .release-summary:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .release-summary-version {
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .release-summary-meta {
+    color: var(--muted);
+    font-size: 11px;
+    flex: 1;
+  }
+
+  .release-summary-date {
+    color: var(--muted);
+    font-size: 11px;
+  }
+
+  .release-summary-chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.2s;
+    display: inline-block;
+  }
+
+  .release-item[open] .release-summary-chevron {
+    transform: rotate(180deg);
+  }
+
+  .release-body {
+    padding: 12px;
+  }
+
+  .release-link {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 12px;
+  }
+
+  .release-link:hover {
+    color: var(--accent2);
+  }
+
+  .changelog-header {
+    margin-bottom: 14px;
+  }
+
+  .changelog-title {
+    color: var(--accent);
+    font-size: 20px;
+    margin-bottom: 4px;
+  }
+
+  .changelog-subtitle {
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  .release-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+
+  .release-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .release-version {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  .release-date {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .release-list {
+    padding-left: 18px;
+    color: var(--text);
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .release-list li {
+    margin-bottom: 6px;
+  }
+
+  .changelog-desktop {
+    display: none;
+  }
+
+  @media (min-width: 641px) {
+    .changelog-modal {
+      width: 680px;
+      max-width: 680px;
+      height: 460px;
+      max-height: none;
+      overflow: hidden;
+    }
+
+    .changelog-accordion {
+      display: none;
+    }
+
+    .changelog-desktop {
+      display: flex;
+      height: 100%;
+    }
+
+    .changelog-sidenav {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      width: 96px;
+      flex-shrink: 0;
+      border-right: 1px solid var(--border);
+      padding-right: 14px;
+      margin-right: 20px;
+    }
+
+    .sidenav-btn {
+      font-family: 'IBM Plex Mono', monospace;
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      text-align: left;
+      padding: 8px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .snav-ver {
+      font-size: 13px;
+      font-weight: 600;
+      color: inherit;
+    }
+
+    .snav-date {
+      font-size: 10px;
+    }
+
+    .sidenav-btn.active {
+      color: var(--accent);
+      background: rgba(232, 255, 71, 0.07);
+    }
+
+    .sidenav-btn:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .changelog-main {
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .changelog-panel {
+      display: none;
+    }
+
+    .changelog-panel.active {
+      display: block;
+    }
+
+    .panel-version {
+      font-size: 17px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 3px;
+    }
+
+    .panel-tagline {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 3px;
+    }
+
+    .panel-date {
+      color: var(--muted);
+      font-size: 11px;
+      margin-bottom: 14px;
+    }
+  }
+
   .footer {
     position: fixed;
     left: 0;
@@ -464,7 +881,10 @@
 <div class="main">
   <div class="sidebar">
     <div>
-      <div class="section-label">Input Text</div>
+      <div class="input-text-header">
+        <div class="section-label">Input Text</div>
+        <button id="reset-btn">↺ Reset</button>
+      </div>
       <textarea id="text-input" rows="3" placeholder="Type your text…">Pixels</textarea>
     </div>
 
@@ -490,30 +910,6 @@
       </div>
     </div>
 
-    <div class="divider"></div>
-
-    <div id="pixel-controls">
-      <div class="section-label">Pixel Grid</div>
-      <div class="control-row">
-        <label for="cell-size">Cell size <span style="flex:1 1 auto"></span><span id="cs-val">15</span>px</label>
-        <input type="range" id="cell-size" min="4" max="50" value="15">
-      </div>
-      <div class="color-row" style="margin-top:12px">
-        <div class="color-field">
-          <label style="font-size:10px;color:var(--muted)">On pixel</label>
-          <input type="color" id="on-color" value="#111111">
-        </div>
-        <div class="color-field">
-          <label style="font-size:10px;color:var(--muted)">Off A</label>
-          <input type="color" id="off-a-color" value="#c8c8c8">
-        </div>
-        <div class="color-field">
-          <label style="font-size:10px;color:var(--muted)">Off B</label>
-          <input type="color" id="off-b-color" value="#f0f0f0">
-        </div>
-      </div>
-    </div>
-
     <div id="status"></div>
 
     <div class="download-row">
@@ -522,10 +918,138 @@
   </div>
 
   <div class="canvas-area">
-    <div id="output-container">
+    <div class="canvas-hud" aria-live="polite">
       <div class="info-bar" id="info-bar">—</div>
+    </div>
+    <div id="output-container">
       <canvas id="canvas-output"></canvas>
-      <div class="info-bar" id="coord-bar"></div>
+    </div>
+    <button class="recenter-btn" id="recenter-btn" type="button" aria-label="Recenter canvas view" title="Recenter view">
+      <span class="recenter-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+</div>
+
+<div id="changelog-modal-bg" class="modal-bg" style="display:none;">
+  <div class="modal changelog-modal">
+    <button class="close" id="changelog-modal-close" aria-label="Close">&times;</button>
+    <div class="changelog-header">
+      <h2 class="changelog-title">Release Notes</h2>
+    </div>
+
+    <!-- Desktop: sidenav + main panel -->
+    <div class="changelog-desktop">
+      <nav class="changelog-sidenav">
+        <button class="sidenav-btn active" data-target="panel-v14">
+          <span class="snav-ver">v1.4</span>
+          <span class="snav-date">2026-05-09</span>
+        </button>
+        <button class="sidenav-btn" data-target="panel-v13">
+          <span class="snav-ver">v1.3</span>
+          <span class="snav-date">2026-05-08</span>
+        </button>
+        <button class="sidenav-btn" data-target="panel-v12">
+          <span class="snav-ver">v1.2</span>
+          <span class="snav-date">2026-04-26</span>
+        </button>
+      </nav>
+      <div class="changelog-main">
+        <div class="changelog-panel active" id="panel-v14">
+          <div class="panel-version">v1.4</div>
+          <div class="panel-tagline">Changelog, responsive design &amp; canvas interaction</div>
+          <div class="panel-date">2026-05-09</div>
+          <ul class="release-list">
+            <li>Added Release Notes modal (this menu) accessible via the version badge.</li>
+            <li>Added responsive mobile layout — sidebar stacks above canvas at narrow widths.</li>
+            <li>Added canvas pan via left- or right-click drag, with a recenter button that fades in when the view is offset.</li>
+            <li>Added two-finger pinch-to-zoom on touch devices.</li>
+            <li>Added Reset button that appears in the Input Text header whenever sliders deviate from defaults.</li>
+            <li>Removed pixel grid controls (cell size slider, color pickers) — cell size is now scroll/pinch only; colors are fixed.</li>
+            <li>Moved info bar to a floating HUD overlay above the canvas.</li>
+            <li>Added Escape key support to close all modals.</li>
+            <li>Added <code>npm run dev</code> workflow with nodemon for local development.</li>
+          </ul>
+        </div>
+        <div class="changelog-panel" id="panel-v13">
+          <div class="panel-version">v1.3</div>
+          <div class="panel-tagline">Spanish glyphs + canvas polish</div>
+          <div class="panel-date">2026-05-08</div>
+          <ul class="release-list">
+            <li>Added Spanish accented letters and punctuation across the glyph set.</li>
+            <li>Improved canvas interaction with smoother scroll and hover behavior.</li>
+            <li>Expanded symbols and punctuation coverage from related glyph updates.</li>
+          </ul>
+        </div>
+        <div class="changelog-panel" id="panel-v12">
+          <div class="panel-version">v1.2</div>
+          <div class="panel-tagline">Filename input + accessibility</div>
+          <div class="panel-date">2026-04-26</div>
+          <ul class="release-list">
+            <li>Added editable PNG filename input with auto-populated slugified defaults.</li>
+            <li>Improved accessibility and visual contrast across the control panel.</li>
+            <li>Added favicon, about modal, footer attribution, and visible version label.</li>
+            <li>Documented filename-input design and implementation details.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile: accordion -->
+    <div class="changelog-accordion">
+      <details class="release-item" open>
+        <summary class="release-summary">
+          <span class="release-summary-version">v1.4</span>
+          <span class="release-summary-meta">Changelog, responsive design &amp; canvas interaction</span>
+          <span class="release-summary-date">2026-05-09</span>
+          <span class="release-summary-chevron">▾</span>
+        </summary>
+        <div class="release-body">
+          <ul class="release-list">
+            <li>Added Release Notes modal (this menu) accessible via the version badge.</li>
+            <li>Added responsive mobile layout — sidebar stacks above canvas at narrow widths.</li>
+            <li>Added canvas pan via left- or right-click drag, with a recenter button that fades in when the view is offset.</li>
+            <li>Added two-finger pinch-to-zoom on touch devices.</li>
+            <li>Added Reset button that appears in the Input Text header whenever sliders deviate from defaults.</li>
+            <li>Removed pixel grid controls (cell size slider, color pickers) — cell size is now scroll/pinch only; colors are fixed.</li>
+            <li>Moved info bar to a floating HUD overlay above the canvas.</li>
+            <li>Added Escape key support to close all modals.</li>
+            <li>Added <code>npm run dev</code> workflow with nodemon for local development.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="release-item">
+        <summary class="release-summary">
+          <span class="release-summary-version">v1.3</span>
+          <span class="release-summary-meta">Spanish glyphs + canvas polish</span>
+          <span class="release-summary-date">2026-05-08</span>
+          <span class="release-summary-chevron">▾</span>
+        </summary>
+        <div class="release-body">
+          <ul class="release-list">
+            <li>Added Spanish accented letters and punctuation across the glyph set.</li>
+            <li>Improved canvas interaction with smoother scroll and hover behavior.</li>
+            <li>Expanded symbols and punctuation coverage from related glyph updates.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details class="release-item">
+        <summary class="release-summary">
+          <span class="release-summary-version">v1.2</span>
+          <span class="release-summary-meta">Filename input + accessibility</span>
+          <span class="release-summary-date">2026-04-26</span>
+          <span class="release-summary-chevron">▾</span>
+        </summary>
+        <div class="release-body">
+          <ul class="release-list">
+            <li>Added editable PNG filename input with auto-populated slugified defaults.</li>
+            <li>Improved accessibility and visual contrast across the control panel.</li>
+            <li>Added favicon, about modal, footer attribution, and visible version label.</li>
+            <li>Documented filename-input design and implementation details.</li>
+          </ul>
+        </div>
+      </details>
     </div>
   </div>
 </div>
@@ -535,7 +1059,9 @@
 const infoIcon = document.getElementById('info-icon');
 const infoModalBg = document.getElementById('info-modal-bg');
 const infoModalClose = document.getElementById('info-modal-close');
-
+const openChangelogBtn = document.getElementById('open-changelog');
+const changelogModalBg = document.getElementById('changelog-modal-bg');
+const changelogModalClose = document.getElementById('changelog-modal-close');
 infoIcon.addEventListener('click', () => {
   infoModalBg.style.display = 'flex';
 });
@@ -544,6 +1070,44 @@ infoModalBg.addEventListener('click', (e) => {
 });
 infoModalClose.addEventListener('click', () => {
   infoModalBg.style.display = 'none';
+});
+
+openChangelogBtn.addEventListener('click', () => {
+  changelogModalBg.style.display = 'flex';
+});
+
+changelogModalBg.addEventListener('click', (e) => {
+  if (e.target === changelogModalBg) changelogModalBg.style.display = 'none';
+});
+
+changelogModalClose.addEventListener('click', () => {
+  changelogModalBg.style.display = 'none';
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (changelogModalBg.style.display === 'flex') changelogModalBg.style.display = 'none';
+    if (infoModalBg.style.display === 'flex') infoModalBg.style.display = 'none';
+  }
+});
+
+document.querySelectorAll('.release-item').forEach((item) => {
+  item.addEventListener('toggle', () => {
+    if (item.open) {
+      document.querySelectorAll('.release-item').forEach((other) => {
+        if (other !== item) other.removeAttribute('open');
+      });
+    }
+  });
+});
+
+document.querySelectorAll('.sidenav-btn').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.sidenav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.changelog-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(btn.dataset.target).classList.add('active');
+  });
 });
 // ──────────────────────────────────────────────
 // FONT DATA
@@ -843,6 +1407,23 @@ function slugify(text) {
 
 let hoveredCell = null;
 let lastImageData = null;
+let isRightPanning = false;
+let rightPanPointerId = null;
+let panLastX = 0;
+let panLastY = 0;
+let viewportOffsetX = 0;
+let viewportOffsetY = 0;
+let activePanButton = null;
+
+const activePointers = new Map();
+let pinchActive = false;
+let pinchStartDist = 0;
+let pinchStartCellSize = 0;
+
+function getPinchDist() {
+  const [a, b] = [...activePointers.values()];
+  return Math.hypot(a.x - b.x, a.y - b.y);
+}
 
 function drawHighlight(canvas, col, row, cellSize) {
   if (!lastImageData) return;
@@ -859,22 +1440,62 @@ const textInput = document.getElementById('text-input');
 const letterSpacingInput = document.getElementById('letter-spacing');
 const spaceWidthInput = document.getElementById('space-width');
 const paddingInput = document.getElementById('padding');
-const cellSizeInput = document.getElementById('cell-size');
-const onColorInput = document.getElementById('on-color');
-const offAInput = document.getElementById('off-a-color');
-const offBInput = document.getElementById('off-b-color');
 const lineSpacingInput = document.getElementById('line-spacing');
 const canvasEl = document.getElementById('canvas-output');
+const canvasArea = document.querySelector('.canvas-area');
+const outputContainer = document.getElementById('output-container');
+const recenterBtn = document.getElementById('recenter-btn');
+const resetBtn = document.getElementById('reset-btn');
 const infoBar = document.getElementById('info-bar');
 const statusEl = document.getElementById('status');
 const filenameInput = document.getElementById('filename-input');
-const coordBar = document.getElementById('coord-bar');
+
+function applyViewportTransform() {
+  outputContainer.style.transform = `translate(${viewportOffsetX}px, ${viewportOffsetY}px)`;
+  updateRecenterVisibility();
+}
+
+function updateRecenterVisibility() {
+  const hasOffset = Math.abs(viewportOffsetX) > 0.5 || Math.abs(viewportOffsetY) > 0.5;
+  const hasScrollOffset = canvasArea.scrollLeft !== 0 || canvasArea.scrollTop !== 0;
+  recenterBtn.classList.toggle('visible', hasOffset || hasScrollOffset);
+}
+
+function recenterViewport() {
+  viewportOffsetX = 0;
+  viewportOffsetY = 0;
+  canvasArea.scrollLeft = 0;
+  canvasArea.scrollTop = 0;
+  applyViewportTransform();
+}
 
 document.getElementById('ls-val').textContent = letterSpacingInput.value;
 document.getElementById('sw-val').textContent = spaceWidthInput.value;
 document.getElementById('pd-val').textContent = paddingInput.value;
-document.getElementById('cs-val').textContent = cellSizeInput.value;
 document.getElementById('lsp-val').textContent = lineSpacingInput.value;
+
+let currentCellSize = window.innerWidth <= 640 ? 8 : 15;
+const FIXED_COLORS = {
+  onColor: '#111111',
+  offA: '#c8c8c8',
+  offB: '#f0f0f0',
+};
+
+const DEFAULTS = {
+  letterSpacing: 1,
+  spaceWidth: 5,
+  padding: 2,
+  lineSpacing: 1,
+};
+
+function checkDirty() {
+  const dirty =
+    parseInt(letterSpacingInput.value) !== DEFAULTS.letterSpacing ||
+    parseInt(spaceWidthInput.value) !== DEFAULTS.spaceWidth ||
+    parseInt(paddingInput.value) !== DEFAULTS.padding ||
+    parseInt(lineSpacingInput.value) !== DEFAULTS.lineSpacing;
+  resetBtn.style.display = dirty ? 'inline-block' : 'none';
+}
 
 function getOpts() {
   return {
@@ -882,10 +1503,10 @@ function getOpts() {
     spaceWidth: parseInt(spaceWidthInput.value),
     padding: parseInt(paddingInput.value),
     lineSpacing: parseInt(lineSpacingInput.value),
-    cellSize: parseInt(cellSizeInput.value),
-    onColor: onColorInput.value,
-    offA: offAInput.value,
-    offB: offBInput.value,
+    cellSize: currentCellSize,
+    onColor: FIXED_COLORS.onColor,
+    offA: FIXED_COLORS.offA,
+    offB: FIXED_COLORS.offB,
   };
 }
 
@@ -903,18 +1524,28 @@ function update() {
 }
 
 // Slider labels
-letterSpacingInput.addEventListener('input', () => { document.getElementById('ls-val').textContent = letterSpacingInput.value; update(); });
-spaceWidthInput.addEventListener('input', () => { document.getElementById('sw-val').textContent = spaceWidthInput.value; update(); });
-paddingInput.addEventListener('input', () => { document.getElementById('pd-val').textContent = paddingInput.value; update(); });
-cellSizeInput.addEventListener('input', () => { document.getElementById('cs-val').textContent = cellSizeInput.value; update(); });
-lineSpacingInput.addEventListener('input', () => { document.getElementById('lsp-val').textContent = lineSpacingInput.value; update(); });
-
-
-[onColorInput, offAInput, offBInput].forEach(el => {
-  el.addEventListener('input', update);
-});
+letterSpacingInput.addEventListener('input', () => { document.getElementById('ls-val').textContent = letterSpacingInput.value; update(); checkDirty(); });
+spaceWidthInput.addEventListener('input', () => { document.getElementById('sw-val').textContent = spaceWidthInput.value; update(); checkDirty(); });
+paddingInput.addEventListener('input', () => { document.getElementById('pd-val').textContent = paddingInput.value; update(); checkDirty(); });
+lineSpacingInput.addEventListener('input', () => { document.getElementById('lsp-val').textContent = lineSpacingInput.value; update(); checkDirty(); });
 
 textInput.addEventListener('input', update);
+resetBtn.addEventListener('click', () => {
+  letterSpacingInput.value = DEFAULTS.letterSpacing;
+  spaceWidthInput.value = DEFAULTS.spaceWidth;
+  paddingInput.value = DEFAULTS.padding;
+  lineSpacingInput.value = DEFAULTS.lineSpacing;
+  document.getElementById('ls-val').textContent = DEFAULTS.letterSpacing;
+  document.getElementById('sw-val').textContent = DEFAULTS.spaceWidth;
+  document.getElementById('pd-val').textContent = DEFAULTS.padding;
+  document.getElementById('lsp-val').textContent = DEFAULTS.lineSpacing;
+  checkDirty();
+  update();
+});
+recenterBtn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  recenterViewport();
+});
 
 document.getElementById('download-btn').addEventListener('click', () => {
   const filename = slugify(textInput.value) + '.png';
@@ -924,38 +1555,131 @@ document.getElementById('download-btn').addEventListener('click', () => {
   link.click();
 });
 
-document.querySelector('.canvas-area').addEventListener('wheel', (e) => {
+canvasArea.addEventListener('wheel', (e) => {
   e.preventDefault();
-  const min = parseInt(cellSizeInput.min);
-  const max = parseInt(cellSizeInput.max);
-  const current = parseInt(cellSizeInput.value);
+  const min = 4;
+  const max = 50;
+  const current = currentCellSize;
   const next = Math.min(max, Math.max(min, current + (e.deltaY < 0 ? 1 : -1)));
   if (next === current) return;
-  cellSizeInput.value = next;
-  document.getElementById('cs-val').textContent = next;
+  currentCellSize = next;
   update();
 }, { passive: false });
 
+canvasArea.addEventListener('pointerdown', (e) => {
+  activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+  if (activePointers.size >= 2) {
+    stopRightPan();
+    pinchActive = true;
+    pinchStartDist = getPinchDist();
+    pinchStartCellSize = currentCellSize;
+    canvasArea.setPointerCapture(e.pointerId);
+    e.preventDefault();
+    return;
+  }
+
+  if (e.target.closest('#recenter-btn')) return;
+  if (e.button !== 0 && e.button !== 2) return;
+  isRightPanning = true;
+  activePanButton = e.button;
+  rightPanPointerId = e.pointerId;
+  panLastX = e.clientX;
+  panLastY = e.clientY;
+  canvasArea.style.cursor = 'grabbing';
+  outputContainer.style.cursor = 'grabbing';
+  canvasArea.setPointerCapture(e.pointerId);
+  e.preventDefault();
+});
+
+canvasArea.addEventListener('pointermove', (e) => {
+  if (activePointers.has(e.pointerId)) {
+    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  }
+
+  if (pinchActive && activePointers.size >= 2) {
+    const dist = getPinchDist();
+    if (pinchStartDist > 0) {
+      const next = Math.min(50, Math.max(4, Math.round(pinchStartCellSize * dist / pinchStartDist)));
+      if (next !== currentCellSize) {
+        currentCellSize = next;
+        update();
+      }
+    }
+    e.preventDefault();
+    return;
+  }
+
+  if (!isRightPanning || e.pointerId !== rightPanPointerId) return;
+  const requiredMask = activePanButton === 2 ? 2 : 1;
+  if ((e.buttons & requiredMask) !== requiredMask) {
+    stopRightPan();
+    return;
+  }
+  const dx = e.clientX - panLastX;
+  const dy = e.clientY - panLastY;
+  viewportOffsetX += dx;
+  viewportOffsetY += dy;
+  applyViewportTransform();
+  panLastX = e.clientX;
+  panLastY = e.clientY;
+  e.preventDefault();
+});
+
+function stopRightPan() {
+  isRightPanning = false;
+  rightPanPointerId = null;
+  activePanButton = null;
+  canvasArea.style.cursor = '';
+  outputContainer.style.cursor = '';
+}
+
+canvasArea.addEventListener('pointerup', (e) => {
+  activePointers.delete(e.pointerId);
+  if (pinchActive && activePointers.size < 2) {
+    pinchActive = false;
+  }
+  if (!isRightPanning || e.pointerId !== rightPanPointerId) return;
+  stopRightPan();
+});
+
+canvasArea.addEventListener('pointercancel', (e) => {
+  activePointers.delete(e.pointerId);
+  if (pinchActive && activePointers.size < 2) {
+    pinchActive = false;
+  }
+  if (!isRightPanning || e.pointerId !== rightPanPointerId) return;
+  stopRightPan();
+});
+
+canvasArea.addEventListener('contextmenu', (e) => {
+  e.preventDefault();
+});
+
+window.addEventListener('blur', stopRightPan);
+canvasArea.addEventListener('scroll', updateRecenterVisibility, { passive: true });
+
 canvasEl.addEventListener('mousemove', (e) => {
-  const cellSize = parseInt(cellSizeInput.value);
+  if (isRightPanning) return;
+  const cellSize = currentCellSize;
   const col = Math.floor(e.offsetX / cellSize);
   const row = Math.floor(e.offsetY / cellSize);
   if (!hoveredCell || hoveredCell.col !== col || hoveredCell.row !== row) {
     hoveredCell = { col, row };
-    coordBar.textContent = `(${col}, ${row})`;
     drawHighlight(canvasEl, col, row, cellSize);
   }
 });
 
 canvasEl.addEventListener('mouseleave', () => {
   hoveredCell = null;
-  coordBar.textContent = '—';
   if (lastImageData) {
     canvasEl.getContext('2d').putImageData(lastImageData, 0, 0);
   }
 });
 
 update();
+checkDirty();
+updateRecenterVisibility();
 </script>
 </body>
 </html>
